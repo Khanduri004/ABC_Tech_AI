@@ -1,0 +1,9 @@
+terraform/.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*.pem
+app/target/
+.settings/
+.classpath
+.project
