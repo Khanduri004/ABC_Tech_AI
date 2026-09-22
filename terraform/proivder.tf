@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/helm"
       version = "~> 2.13"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
+    }
   }
 }
 
@@ -42,4 +46,3 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.this.token
   }
 }
-

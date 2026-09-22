@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: abc-retail
+  namespace: abc-retail
+  labels:
+    app: abc-retail
+    tier: web
+    environment: dev
+spec:
+  type: ClusterIP
+  selector:
+    app: abc-retail
+    tier: web
+    environment: dev
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
