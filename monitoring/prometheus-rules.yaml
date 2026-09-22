@@ -1,0 +1,58 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: abc-retail-alerts
+  namespace: monitoring
+  labels:
+    release: abc-monitoring
+    app.kubernetes.io/part-of: abc-technologies
+spec:
+  groups:
+    - name: abc-retail.availability
+      rules:
+        - alert: ABCRetailDeploymentUnavailable
+          expr: |
+            kube_deployment_status_replicas_available{
+              namespace="abc-retail",
+              deployment="abc-retail"
+            } < 1
+          for: 5m
+          labels:
+            severity: critical
+            service: abc-retail
+          annotations:
+            summary: ABC Retail deployment has no available replicas
+            description: The abc-retail Deployment has been unavailable for more than five minutes.
+
+        - alert: ABCRetailPodRestarting
+          expr: |
+            increase(kube_pod_container_status_restarts_total{
+              namespace="abc-retail",
+              container="abc-retail"
+            }[15m]) > 3
+          for: 5m
+          labels:
+            severity: warning
+            service: abc-retail
+          annotations:
+            summary: ABC Retail container is restarting frequently
+            description: The abc-retail container restarted more than three times in 15 minutes.
+
+        - alert: ABCRetailHighMemoryUsage
+          expr: |
+            container_memory_working_set_bytes{
+              namespace="abc-retail",
+              container="abc-retail"
+            }
+            /
+            container_spec_memory_limit_bytes{
+              namespace="abc-retail",
+              container="abc-retail"
+            } > 0.85
+          for: 10m
+          labels:
+            severity: warning
+            service: abc-retail
+          annotations:
+            summary: ABC Retail container is nearing its memory limit
+            description: The abc-retail container has used more than 85 percent of its configured memory limit for ten minutes.
